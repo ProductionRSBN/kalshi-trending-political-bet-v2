@@ -2,109 +2,54 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=546, initial-scale=1.0">
-    <title>Kalshi Bet: KXPRESNOMR-28-JDV</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600&display=swap" rel="stylesheet">
-    <style>
-        body {
-            width: 546px;
-            height: 658px;
-            margin: 0;
-            padding: 20px;
-            overflow: hidden;
-            background-color: #003221; /* Brand secondary dark green */
-            color: #FFFFFF; /* White text */
-            font-family: 'Inter', sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: space-around;
-            box-sizing: border-box;
-        }
-        h1 {
-            font-weight: 600;
-            font-size: 24px;
-            margin: 10px 0;
-            text-align: center;
-        }
-        h2 {
-            font-weight: 600;
-            font-size: 28px;
-            margin: 10px 0;
-            text-align: center;
-        }
-        .logo {
-            height: 50px;
-        }
-        .featured-image {
-            width: 300px;
-            height: auto;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
-        }
-        .prices {
-            display: flex;
-            justify-content: space-around;
-            width: 100%;
-            margin: 20px 0;
-        }
-        .price {
-            text-align: center;
-            font-size: 36px;
-            font-weight: 500;
-        }
-        .yes {
-            color: #265CFF; /* Predict Yes */
-        }
-        .no {
-            color: #AA00FF; /* Predict No */
-        }
-        p {
-            font-size: 18px;
-            margin: 10px 0;
-            text-align: center;
-        }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalshi Live Bet Widget</title>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <img src="https://static.cdnlogo.com/logos/k/46/kalshi.svg" alt="Kalshi Logo" class="logo">
-    <h1>Sponsored by Kalshi</h1>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f3/January_2025_Official_Vice_Presidential_Portrait_of_JD_Vance.jpg" alt="JD Vance" class="featured-image">
-    <h2>Will J.D. Vance be the 2028 Republican Nominee?</h2>
-    <div class="prices">
-        <div class="price">
-            Yes: <span id="yes-price" class="yes">Loading...</span>¢
-        </div>
-        <div class="price">
-            No: <span id="no-price" class="no">Loading...</span>¢
+<div id="kalshi-widget">
+    <img id="bet-image" src="" alt="Kalshi Bet Image">
+    <div id="bet-info">
+        <h1 id="bet-title">Loading...</h1>
+        <div id="price-container">
+            <span id="price-yes">--</span> / <span id="price-no">--</span>
         </div>
     </div>
-    <p>Trade now on Kalshi.com</p>
+    <div id="kalshi-logo">KALSHI</div>
+</div>
 
-    <script>
-        function updatePrices() {
-            const apiUrl = 'https://trading-api.kalshi.com/trade-api/v2/markets/KXPRESNOMR-28-JDV';
-            const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(apiUrl);
+<script>
+(async function loadKalshiData() {
+    const proxy = "https://api.allorigins.win/raw?url=";
+    // LIVE Kalshi bet URL. Replace with the correct API endpoint if different.
+    const betUrl = encodeURIComponent("https://kalshi.com/api/v1/events/kxpresnomr-28");
+    const url = proxy + betUrl;
 
-            fetch(proxyUrl)
-                .then(response => response.json())
-                .then(data => {
-                    const jsonData = JSON.parse(data.contents);
-                    const market = jsonData.market;
+    try {
+        const response = await fetch(url);
+        const data = await response.json();
+        
+        // FEATURED IMAGE
+        const imgUrl = data?.featured_image || "";
+        document.getElementById("bet-image").src = imgUrl;
 
-                    document.getElementById('yes-price').innerText = market.yes_ask;
-                    document.getElementById('no-price').innerText = market.no_ask;
-                })
-                .catch(error => {
-                    console.error('Error fetching data:', error);
-                });
-        }
+        // TITLE
+        const title = data?.title || "Kalshi Bet";
+        document.getElementById("bet-title").textContent = title;
 
-        // Initial update
-        updatePrices();
+        // PRICES
+        const priceYes = data?.prices?.yes?.toFixed(2) ?? "--";
+        const priceNo = data?.prices?.no?.toFixed(2) ?? "--";
+        document.getElementById("price-yes").textContent = `${priceYes}%`;
+        document.getElementById("price-no").textContent = `${priceNo}%`;
+    } catch (err) {
+        console.error("Kalshi fetch failed:", err);
+        document.getElementById("bet-title").textContent = "Error loading bet";
+    }
 
-        // Auto-update every 30 seconds
-        setInterval(updatePrices, 30000);
-    </script>
+    // Refresh every 15 seconds
+    setTimeout(loadKalshiData, 15000);
+})();
+</script>
 </body>
 </html>
