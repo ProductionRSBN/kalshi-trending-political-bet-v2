@@ -3,172 +3,108 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=546, initial-scale=1.0">
-    <title>Kalshi Live Bet Selector</title>
+    <title>Kalshi Bet: KXPRESNOMR-28-JDV</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600&display=swap" rel="stylesheet">
     <style>
         body {
             width: 546px;
             height: 658px;
             margin: 0;
-            padding: 0;
+            padding: 20px;
             overflow: hidden;
-            background-color: #FFFFFF; /* Background Primary */
-            font-family: Arial, sans-serif;
-            color: #000000E6; /* Text primary */
+            background-color: #003221; /* Brand secondary dark green */
+            color: #FFFFFF; /* White text */
+            font-family: 'Inter', sans-serif;
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-start;
+            justify-content: space-around;
+            box-sizing: border-box;
         }
-        .header {
-            width: 100%;
-            background-color: #003221; /* Brand secondary */
-            color: #FFFFFF;
+        h1 {
+            font-weight: 600;
+            font-size: 24px;
+            margin: 10px 0;
             text-align: center;
-            padding: 10px 0;
-            font-size: 18px;
-            font-weight: bold;
+        }
+        h2 {
+            font-weight: 600;
+            font-size: 28px;
+            margin: 10px 0;
+            text-align: center;
         }
         .logo {
-            width: 150px;
-            margin: 10px 0;
+            height: 50px;
         }
-        .promo {
-            font-size: 16px;
-            color: #09C285; /* Brand primary */
-            margin: 10px 0;
-            text-align: center;
+        .featured-image {
+            width: 300px;
+            height: auto;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
         }
-        #marketSelect {
-            width: 80%;
-            padding: 10px;
-            margin: 20px 0;
-            border: 1px solid #0000004D; /* Text tertiary */
-            background-color: #FFFFFFF5; /* Background Secondary */
-            font-size: 14px;
-        }
-        .display {
-            width: 80%;
-            background-color: #FFFFFF;
-            border: 1px solid #00000080; /* Text secondary */
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-        }
-        .price-box {
+        .prices {
             display: flex;
             justify-content: space-around;
+            width: 100%;
             margin: 20px 0;
+        }
+        .price {
+            text-align: center;
+            font-size: 36px;
+            font-weight: 500;
         }
         .yes {
             color: #265CFF; /* Predict Yes */
-            font-weight: bold;
-            font-size: 24px;
         }
         .no {
             color: #AA00FF; /* Predict No */
-            font-weight: bold;
-            font-size: 24px;
         }
-        .detail {
-            font-size: 14px;
-            color: #00000080; /* Text secondary */
-            margin: 5px 0;
-        }
-        .footer {
-            margin-top: auto;
-            font-size: 12px;
-            color: #0000004D; /* Text tertiary */
+        p {
+            font-size: 18px;
+            margin: 10px 0;
             text-align: center;
-            padding: 10px;
         }
     </style>
 </head>
 <body>
-    <div class="header">Sponsored by Kalshi</div>
-    <img src="https://upload.wikimedia.org/wikipedia/commons/e/ee/Kalshi_logo.svg" alt="Kalshi Logo" class="logo">
-    <div class="promo">Trade on Kalshi – Predict the Future Today!</div>
-    <select id="marketSelect">
-        <option value="">Select a Live Trading Bet...</option>
-    </select>
-    <div class="display" id="display">
-        <div id="title" class="detail">No bet selected</div>
-        <div class="price-box">
-            <div>Yes: <span id="yesPrice" class="yes">--</span>¢</div>
-            <div>No: <span id="noPrice" class="no">--</span>¢</div>
+    <img src="https://static.cdnlogo.com/logos/k/46/kalshi.svg" alt="Kalshi Logo" class="logo">
+    <h1>Sponsored by Kalshi</h1>
+    <img src="https://upload.wikimedia.org/wikipedia/commons/f/f3/January_2025_Official_Vice_Presidential_Portrait_of_JD_Vance.jpg" alt="JD Vance" class="featured-image">
+    <h2>Will J.D. Vance be the 2028 Republican Nominee?</h2>
+    <div class="prices">
+        <div class="price">
+            Yes: <span id="yes-price" class="yes">Loading...</span>¢
         </div>
-        <div class="detail">Last Price: <span id="lastPrice">--</span>¢</div>
-        <div class="detail">Volume: <span id="volume">--</span></div>
-        <div class="detail">Open Interest: <span id="openInterest">--</span></div>
+        <div class="price">
+            No: <span id="no-price" class="no">Loading...</span>¢
+        </div>
     </div>
-    <div class="footer">Live data from Kalshi API • Updates every 10s</div>
+    <p>Trade now on Kalshi.com</p>
 
     <script>
-        const baseUrl = 'https://api.elections.kalshi.com/trade-api/v2';
-        const proxy = 'https://api.allorigins.win/raw?url='; // CORS proxy to bypass browser restrictions
-        let updateInterval = null;
+        function updatePrices() {
+            const apiUrl = 'https://trading-api.kalshi.com/trade-api/v2/markets/KXPRESNOMR-28-JDV';
+            const proxyUrl = 'https://api.allorigins.win/get?url=' + encodeURIComponent(apiUrl);
 
-        async function fetchAllOpenMarkets() {
-            let markets = [];
-            let cursor = null;
-            do {
-                const params = new URLSearchParams({ status: 'open', limit: '500' });
-                if (cursor) params.append('cursor', cursor);
-                const url = `${baseUrl}/markets?${params}`;
-                const response = await fetch(proxy + encodeURIComponent(url));
-                if (!response.ok) throw new Error('Failed to fetch markets');
-                const data = await response.json();
-                markets = markets.concat(data.markets);
-                cursor = data.cursor;
-            } while (cursor);
-            return markets;
-        }
+            fetch(proxyUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const jsonData = JSON.parse(data.contents);
+                    const market = jsonData.market;
 
-        async function populateSelect() {
-            try {
-                const markets = await fetchAllOpenMarkets();
-                const select = document.getElementById('marketSelect');
-                markets.forEach(market => {
-                    const option = document.createElement('option');
-                    option.value = market.ticker;
-                    option.textContent = `${market.title} (${market.ticker})`;
-                    select.appendChild(option);
+                    document.getElementById('yes-price').innerText = market.yes_ask;
+                    document.getElementById('no-price').innerText = market.no_ask;
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
                 });
-            } catch (error) {
-                console.error('Error fetching markets:', error);
-                document.getElementById('title').textContent = 'Error loading markets';
-            }
         }
 
-        async function updateMarketData(ticker) {
-            try {
-                const url = `${baseUrl}/markets/${ticker}`;
-                const response = await fetch(proxy + encodeURIComponent(url));
-                if (!response.ok) throw new Error('Failed to fetch market data');
-                const data = await response.json();
-                const market = data.market;
-                document.getElementById('title').textContent = market.title;
-                document.getElementById('yesPrice').textContent = (market.yes_bid + market.yes_ask) / 2;
-                document.getElementById('noPrice').textContent = (market.no_bid + market.no_ask) / 2;
-                document.getElementById('lastPrice').textContent = market.last_price;
-                document.getElementById('volume').textContent = market.volume;
-                document.getElementById('openInterest').textContent = market.open_interest;
-            } catch (error) {
-                console.error('Error updating data:', error);
-                document.getElementById('title').textContent = 'Error updating data';
-            }
-        }
+        // Initial update
+        updatePrices();
 
-        document.getElementById('marketSelect').addEventListener('change', (event) => {
-            const ticker = event.target.value;
-            if (!ticker) return;
-            if (updateInterval) clearInterval(updateInterval);
-            updateMarketData(ticker); // Initial update
-            updateInterval = setInterval(() => updateMarketData(ticker), 10000); // Auto-update every 10s
-        });
-
-        // Load markets on page load
-        populateSelect();
+        // Auto-update every 30 seconds
+        setInterval(updatePrices, 30000);
     </script>
 </body>
 </html>
-
