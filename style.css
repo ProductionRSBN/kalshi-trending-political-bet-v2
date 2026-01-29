@@ -1,0 +1,58 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Inter', sans-serif;
+}
+
+#kalshi-widget {
+    width: 546px;
+    height: 658px;
+    background-color: #0D0E12; /* Dark background for broadcast aesthetic */
+    color: #FFFFFF;
+    box-sizing: border-box;
+    border: 3px solid #1F2532;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+#bet-image {
+    width: 506px;
+    height: 306px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 2px solid #252A38;
+}
+
+#bet-info {
+    text-align: center;
+    margin-top: 14px;
+}
+
+#bet-title {
+    font-size: 26px;
+    font-weight: 700;
+    color: #FFFFFF;
+    margin: 0 0 8px;
+}
+
+#price-container {
+    font-size: 34px;
+    font-weight: 600;
+    color: #00D2FF; /* Kalshi blue accent */
+}
+
+#price-yes { color: #00E676; } /* YES - greenish */
+#price-no  { color: #FF3D3D; } /* NO - red */
+
+#kalshi-logo {
+    font-size: 24px;
+    font-weight: 700;
+    color: #00D2FF;
+    margin-top: auto;
+    letter-spacing: 2px;
+}
